@@ -1,0 +1,1 @@
+The error message is suggesting a method or variable with the name shoe is being attempted to be used but it has not been defined. 

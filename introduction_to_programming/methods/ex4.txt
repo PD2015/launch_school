@@ -1,0 +1,1 @@
+Nothing will be printed to the screen becasue the results are returned before the puts method is called. Therefore the puts method will not happen.

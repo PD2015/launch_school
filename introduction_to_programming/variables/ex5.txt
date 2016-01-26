@@ -1,0 +1,1 @@
+In both the first and second code snippet X will retun = 3
