@@ -1,0 +1,4 @@
+What is exception handling and what problem does it solve?
+
+Exception handling is setting up your method or programme to give it the option to raise and issue but continue running if a problem occurs, say whilst iterating through data.
+If one value in an array would usually throw an error, casuing the programme to execute. An option using  begin and rescue can be written into the method to prevent the programme from exciting.

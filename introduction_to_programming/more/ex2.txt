@@ -1,0 +1,10 @@
+def execute(&block)
+  block
+end
+
+execute { puts "Hello from inside the execute method!" }
+
+
+What will the following programme print to the screen? What will it return.
+
+The proc that is passed into the method is never ran becasue the block parameter is not called. Therefore it will return the proc object.
