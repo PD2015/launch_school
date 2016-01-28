@@ -1,0 +1,3 @@
+The programme will determine the hashes to be the same. 
+They are written in a different syntax version but equate to the same thing. 
+They also have a different order and order noes not matter in a hash.

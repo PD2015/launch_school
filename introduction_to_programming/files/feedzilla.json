@@ -1,0 +1,11 @@
+--2016-01-28 09:43:13--  https://d186loudes4jlv.cloudfront.net/ruby/feedzilla.json
+Resolving d186loudes4jlv.cloudfront.net... 54.192.3.236, 54.192.3.27, 54.192.3.116, ...
+Connecting to d186loudes4jlv.cloudfront.net|54.192.3.236|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 11471 (11K) [application/json]
+Saving to: 'feedzilla.json.1'
+
+     0K .......... .                                          100%  112M=0s
+
+2016-01-28 09:43:14 (112 MB/s) - 'feedzilla.json.1' saved [11471/11471]
+

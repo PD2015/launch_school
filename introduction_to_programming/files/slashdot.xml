@@ -1,0 +1,12 @@
+--2016-01-28 09:44:08--  https://d186loudes4jlv.cloudfront.net/ruby/slashdot.xml
+Resolving d186loudes4jlv.cloudfront.net... 54.192.3.130, 54.192.3.27, 54.192.3.116, ...
+Connecting to d186loudes4jlv.cloudfront.net|54.192.3.130|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 57899 (57K) [application/xml]
+Saving to: 'slashdot.xml.1'
+
+     0K .......... .......... .......... .......... .......... 88% 96.8K 0s
+    50K ......                                                100%  131K=0.5s
+
+2016-01-28 09:44:09 (109 KB/s) - 'slashdot.xml.1' saved [57899/57899]
+

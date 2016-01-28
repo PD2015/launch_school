@@ -1,0 +1,3 @@
+The major difference between an array and a hash is that an array is indexed by an automatically assigned integer, a hash is indexed by an assigned key.
+
+
