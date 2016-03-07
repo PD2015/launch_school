@@ -2,6 +2,8 @@
 # ask for two numbers
 # ask for the type of operation to perform: add, subtract, multiply or divide
 # display the result
+require "yaml"
+MESSAGES = YAML.load_file("calculator_messages.yml")
 
 def prompt(message)
   puts "=> #{message}"
@@ -11,13 +13,26 @@ def valid_number?(num)
   num.to_f != 0.0
 end
 
-prompt("Welcome to the caluculator programme. Please enter your name..")
+def operation_to_message(op)
+  case op
+  when "+"
+    "Adding"
+  when "-"
+    "Subtracting"
+  when "*"
+    "Multiplying"
+  when "/"
+    "Dividing"
+  end
+end
+
+prompt(MESSAGES["welcome"])
 
 name = ''
 loop do
   name = gets.chomp.downcase
   if name.empty?
-    prompt("Sorry your name can't be emtpy, please enter your name:")
+    prompt(MESSAGES["valid_name_error"])
   else
     break
   end
@@ -28,25 +43,23 @@ loop do # main programme loop.
   no_2 = ''
   operation = ''
 
-
   loop do # number 1 loop
     prompt("Hello #{name}, please enter a number...")
     no_1 = gets.chomp.to_f
     if valid_number?(no_1)
       break
     else
-      puts "Sorry thats not a valid number"
+      prompt(MESSAGES["valid_number_error"])
     end
   end
 
-
-  loop do #number 2 loop
-    prompt("Please enter a second number...")
+  loop do # number 2 loop
+    prompt(MESSAGES["enter_second_no"])
     no_2 = gets.chomp.to_f
     if valid_number?(no_2)
       break
     else
-      puts "Sorry thats not a valid number"
+      prompt(MESSAGES["valid_number_error"]) 
     end
   end
 
@@ -65,43 +78,27 @@ loop do # main programme loop.
     if %w(+ - * /).include?(operation)
       break
     else
-      puts "Oops! You must choose +, -, * or /"
+      prompt(MESSAGES["valid_operation_error"])
     end
   end
 
-  result = case operation
-    when "+"
-       no_1 + no_2
-    when "-"
-       no_1 - no_2
-    when "*"
-      no_1 * no_2  
-    when "/"
-      no_1 / no_2
-  end
+  prompt("#{operation_to_message(operation)} the 2 numbers")
 
-  prompt("the result is: #{result}") 
-  prompt("would you like to do another calculation? (if yes enter y)")
+  result = case operation
+           when "+"
+             no_1 + no_2
+           when "-"
+             no_1 - no_2
+           when "*"
+             no_1 * no_2
+           when "/"
+             no_1 / no_2
+           end
+
+  prompt("the result is: #{result}")
+  prompt(MESSAGES["repeat"])
   ans = gets.chomp.downcase
-    break unless ans.start_with?('y')    
+  break unless ans.start_with?('y')
 end
 
-prompt("Thank you for using the calculator programme, good bye.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+prompt(MESSAGES["good_bye"])

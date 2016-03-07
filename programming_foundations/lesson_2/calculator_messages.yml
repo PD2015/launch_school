@@ -1,0 +1,10 @@
+welcome: "Welcome to the caluculator programme. Please enter your name.."
+valid_name_error: "Sorry your name can't be emtpy, please enter your name:"
+enter_first_no: 
+enter_second_no: "Please enter a second number..."
+valid_number_error: "Sorry thats not a valid number"
+valid_operation_error: "Oops! You must choose +, -, * or /"
+operation_summary: 
+result: 
+repeat: "would you like to do another calculation? (if yes enter y)"
+good_bye: "Thank you for using the calculator programme, good bye."
