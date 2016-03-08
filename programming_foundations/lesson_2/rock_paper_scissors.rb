@@ -1,22 +1,22 @@
 
-VALID_CHOICE = %w("rock", "paper", "scissors")
+VALID_CHOICE = %w(rock paper scissors)
 
 def prompt(message)
   puts "=> #{message}"
 end
 
+def win?(first, second)
+  (first == "rock" && second == "scissors") ||
+    (first == "paper" && second == "rock") ||
+    (first == "scissors" && second == "paper")
+end
+
 def display_results(player_choice, computer_choice)
-  if (player_choice == "rock" && computer_choice == "scissors") ||
-     (player_choice == "paper" && computer_choice == "rock") ||
-     (player_choice == "scissors" && computer_choice == "paper")
+  if win?(player_choice, computer_choice)
     prompt("You Win :) ")
-  elsif (player_choice == "paper" && computer_choice == "scissors") ||
-    (player_choice == "scissors" && computer_choice == "rock") ||
-    (player_choice == "rock" && computer_choice == "paper")
+  elsif win?(computer_choice, player_choice)
     prompt("you loose :(")
-  else (player_choice == "paper" && computer_choice == "paper") ||
-    (player_choice == "rock" && computer_choice == "rock") ||
-    (player_choice == "scissors" && computer_choice == "scissors")
+  else
     prompt("You draw :|")
   end
 end
@@ -41,7 +41,8 @@ loop do
   display_results(player_choice, computer_choice)
 
   prompt("would you like to play again? (if yes type y)")
-  break unless answer = gets.chomp.downcase.start_with?('y')
+  answer = gets.chomp.downcase
+  break unless answer.start_with?('y')
 end
 
 prompt("Thanks for playing, catch you later :)")
