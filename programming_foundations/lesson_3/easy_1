@@ -1,0 +1,170 @@
+Q1)
+
+numbers = [1, 2, 2, 3]
+numbers.uniq
+
+puts numbers
+
+ **********************
+1
+2
+2
+3
+=> nil
+ **********************
+
+=========================================================
+
+Q2)
+what is != and where should it be used?
+
+!= means not equal. When comparing a value it can be used to return a value if the value is not equal to something else.
+
+!user_name. Used to turn any object into the opposite of their boolean equivalent. I.e !true => false, !nil => true
+
+words.uniq! In this case it means that the uniq method will mutate the caller. But in this situation the ! is part of the method name.
+
+? before something. This is the ternary operator for if...else.
+
+after something ?. Useally results in a boolean and is part of the method name.
+
+!!before_something.
+Is used to turn an object into their boolean equivalent.
+
+!!true =>true
+!!Array =>true
+!!nil =>false
+
+==========================================================
+
+Q3)
+Replace the word "important" with "urgent" in this string:
+
+advice = "Few things in life are as important as house training your pet dinosaur."
+
+**********************
+advice.gsub!('important', 'urgent')
+**********************
+
+==========================================================
+
+Q4)
+
+numbers = [1, 2, 3, 4, 5]
+What does the follow method calls do (assume we reset numbers to the original array between method calls)?
+therefore [1, 3, 4, 5]
+
+numbers.delete_at(1)= this deletes at the index position specified.
+numbers.delete(1) = this deletes the object given (1). Therefore [2, 3, 4, 5]
+
+Both mutate and return the deleted item.
+
+=============================================================
+
+Q5)
+
+Programmatically determine if 42 lies between 10 and 100.
+
+hint: Use Ruby's range object in your solution.
+
+**********************
+n = 42
+
+if n > 10 && n < 100
+  puts "#{n} is between 10 and 100"
+else
+  puts "#{n} is not between 10 and 100"
+end
+
+or using range:
+
+(10..100).include?(42)
+**********************
+
+official: 
+(10..100).cover?(42) 
+
+=============================================================
+
+Q6)
+Starting with the string:
+
+famous_words = "seven years ago..."
+show two different ways to put the expected "Four score and " in front of it.
+
+**********************
+famous_words = "seven years ago..."
+famous_words_b4 = "Four score and"
+
+
+famous_words_b4 + " " + famous_words
+famous_words_b4 << famous_words
+**********************
+
+official:
+"Four score and " + famous_words
+
+or
+
+famous_words.prepend("Four score and ")
+
+or
+
+"Four score and " << famous_words
+
+Q7)
+=============================================================
+
+Q8)
+Question 8
+
+If we build an array like this:
+
+flintstones = ["Fred", "Wilma"]
+flintstones << ["Barney", "Betty"]
+flintstones << ["BamBam", "Pebbles"]
+We will end up with this "nested" array:
+
+["Fred", "Wilma", ["Barney", "Betty"], ["BamBam", "Pebbles"]]
+Make this into an un-nested array.
+
+**********************
+flintstones.flatten!
+**********************
+
+==============================================================
+
+Q9)
+Given the hash below
+
+flintstones = { "Fred" => 0, "Wilma" => 1, "Barney" => 2, "Betty" => 3, "BamBam" => 4, "Pebbles" => 5 }
+Turn this into an array containing only two elements: Barney's name and Barney's number
+Turn this into an array containing only two elements: Barney's name and Barney's number
+
+**********************
+flintstones.delete_if {|key, _| key != "Barney"}
+**********************
+
+official:
+flintstones.assoc("Barney")
+#=> ["Barney", 2]
+
+Original array is untouched in this case. Here results returned and not saved to a variable.
+
+=============================================================
+
+Q10)
+Given the array below
+
+flintstones = ["Fred", "Barney", "Wilma", "Betty", "Pebbles", "BamBam"]
+Turn this array into a hash where the names are the keys and the values are the positions in the array.
+
+**********************
+h = {}
+flintstones.each_with_index do |key, index|
+ h[key] = index
+end
+
+**********************
+
+
