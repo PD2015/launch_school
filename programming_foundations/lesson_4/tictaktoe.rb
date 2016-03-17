@@ -7,12 +7,13 @@ WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # lines
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # columns
                 [[1, 5, 9], [3, 5, 7]] # diagonols
 
+
 def prompt(msg)
   puts " => #{msg}"
 end
 
 # rubocop:disable Metrics/AbcSize
-def display_board(brd)
+def display_board(brd, player_score, computer_score, round)
   system "clear"
   puts " You're #{PLAYER_PIECE} and the computer is #{COMPUTER_PIECE}"
   puts "            "
@@ -28,6 +29,9 @@ def display_board(brd)
   puts "  #{brd[7]}  |  #{brd[8]}  |  #{brd[9]}"
   puts "     |     |"
   puts "            "
+  # puts "Player #{score_hash[:player]}, Computer #{ score_hash[:computer]}"
+  puts "Round #{round}. The first to 5 wins the game!" unless player_score == 5 || computer_score == 5
+  puts "Player has #{player_score}, Computer has #{computer_score}"
 end
 # rubocop:enable Metrics/AbcSize
 
@@ -83,30 +87,62 @@ def detect_winner(brd)
   nil
 end
 
-loop do # main game loop
-  board = initialize_board
 
-  loop do
-    display_board(board)
+# def score(detect_winner_output, score_hash) 
+#  if detect_winner_output == "player"
+#     score_hash[:player] += 1
+#   elsif detect_winner_output == "computer"
+#     score_hash[:computer] += 1
+#   else detect_winner_output == nil
+#     score_hash[:player] += 1
+#     score_hash[:computer] += 1
+#   end
+#   score_hash
+# end
 
-    player_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
 
-    computer_places_piece!(board)
-    display_board(board)
-    break if someone_won?(board) || board_full?(board)
+loop do
+# score_hash = {player: 0, computer: 0}
+player_score = 0
+computer_score = 0
+round = 1
+
+  loop do # main game loop
+    board = initialize_board
+    loop do
+      display_board(board, player_score, computer_score, round)
+      
+      player_places_piece!(board)
+      break if someone_won?(board) || board_full?(board)
+     
+      computer_places_piece!(board)
+      display_board(board, player_score, computer_score, round)
+      break if someone_won?(board) || board_full?(board)
+   
+
+    end
+
+    
+
+    player_score += 1 if detect_winner(board) == 'player'
+    computer_score += 1 if detect_winner(board) == 'computer'
+    round += 1
+
+    display_board(board, player_score, computer_score, round)
+
+     if someone_won?(board)
+      prompt("#{detect_winner(board)} wins the game!")
+    else
+      prompt("It's a tie")
+    end
+    
+
+    break if player_score == 5 || computer_score == 5
   end
 
-  display_board(board)
-
-  if someone_won?(board)
-    prompt("#{detect_winner(board)} won!")
-  else
-    prompt("It's a tie")
-  end
-
-  prompt("Do you want to play again? (y or n)")
-  answer = gets.chomp
-  break unless answer.downcase.start_with?('y')
+prompt("Do you want to play again? (y or n)")
+answer = gets.chomp
+break unless answer.downcase.start_with?('y')
 end
+ 
 prompt('Thanks for playing see you next time')
