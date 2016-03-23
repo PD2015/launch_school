@@ -1,5 +1,6 @@
+score_hash = {player: 0, computer: 0}
+
 def score(detect_winner)
-  score_hash = {player: 0, computer: 0}
  if detect_winner == "player"
     score_hash[:player] =+ 1
   elsif detect_winner == "computer"

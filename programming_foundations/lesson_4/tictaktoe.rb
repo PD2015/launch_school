@@ -58,9 +58,31 @@ def player_places_piece!(brd)
 end
 
 def computer_places_piece!(brd)
-  square = empty_squares(brd).sample
-  brd[square] = COMPUTER_PIECE
+  square = nil
+  # square = detect_immediate_threat(brd)  
+  binding.pry
+  if detect_immediate_threat(brd) == nil
+# detect an immediate threat is not returning nil at anypoint for somereson.
+    square = empty_squares(brd).sample
+    brd[square] = COMPUTER_PIECE
+  end
+  
 end
+
+def detect_immediate_threat(brd)
+  WINNING_LINES.each do |line|
+    if brd.values_at(line[0], line[1]).count(PLAYER_PIECE) == 2 
+      brd[line[2]] = COMPUTER_PIECE
+    elsif brd.values_at(line[0], line[2]).count(PLAYER_PIECE) == 2
+      brd[line[1]] = COMPUTER_PIECE
+    elsif brd.values_at(line[1], line[2]).count(PLAYER_PIECE) == 2
+      brd[line[0]] = COMPUTER_PIECE
+    else
+      nil
+    end
+  end
+end
+
 
 def board_full?(brd)
   empty_squares(brd).empty?
@@ -103,46 +125,42 @@ end
 
 loop do
 # score_hash = {player: 0, computer: 0}
-player_score = 0
-computer_score = 0
-round = 1
+  player_score = 0
+  computer_score = 0
+  round = 1
 
-  loop do # main game loop
-    board = initialize_board
-    loop do
-      display_board(board, player_score, computer_score, round)
-      
-      player_places_piece!(board)
-      break if someone_won?(board) || board_full?(board)
+    loop do # main game loop
+      board = initialize_board
+      loop do
+        display_board(board, player_score, computer_score, round)
+        
+        player_places_piece!(board)
+        break if someone_won?(board) || board_full?(board)
+       
+        computer_places_piece!(board)
+        display_board(board, player_score, computer_score, round)
+        break if someone_won?(board) || board_full?(board)
      
-      computer_places_piece!(board)
+      end
+
+      player_score += 1 if detect_winner(board) == 'player'
+      computer_score += 1 if detect_winner(board) == 'computer'
+      round += 1
+
       display_board(board, player_score, computer_score, round)
-      break if someone_won?(board) || board_full?(board)
-   
 
+      if someone_won?(board)
+        prompt("#{detect_winner(board)} wins the game!")
+      else
+        prompt("It's a tie")
+      end
+
+      break if player_score == 5 || computer_score == 5
     end
 
-    
-
-    player_score += 1 if detect_winner(board) == 'player'
-    computer_score += 1 if detect_winner(board) == 'computer'
-    round += 1
-
-    display_board(board, player_score, computer_score, round)
-
-     if someone_won?(board)
-      prompt("#{detect_winner(board)} wins the game!")
-    else
-      prompt("It's a tie")
-    end
-    
-
-    break if player_score == 5 || computer_score == 5
-  end
-
-prompt("Do you want to play again? (y or n)")
-answer = gets.chomp
-break unless answer.downcase.start_with?('y')
+  prompt("Do you want to play again? (y or n)")
+  answer = gets.chomp
+  break unless answer.downcase.start_with?('y')
 end
  
 prompt('Thanks for playing see you next time')
