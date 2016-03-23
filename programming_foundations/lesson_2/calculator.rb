@@ -14,16 +14,17 @@ def valid_number?(num)
 end
 
 def operation_to_message(op)
-  case op
-  when "+"
-    "Adding"
-  when "-"
-    "Subtracting"
-  when "*"
-    "Multiplying"
-  when "/"
-    "Dividing"
-  end
+  word = case op
+         when "+"
+           "Adding"
+         when "-"
+           "Subtracting"
+         when "*"
+           "Multiplying"
+         when "/"
+           "Dividing"
+         end
+  word
 end
 
 prompt(MESSAGES["welcome"])
@@ -59,7 +60,7 @@ loop do # main programme loop.
     if valid_number?(no_2)
       break
     else
-      prompt(MESSAGES["valid_number_error"]) 
+      prompt(MESSAGES["valid_number_error"])
     end
   end
 
