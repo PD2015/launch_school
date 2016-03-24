@@ -6,10 +6,30 @@ COMPUTER_PIECE = 'O'
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # lines
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # columns
                 [[1, 5, 9], [3, 5, 7]] # diagonols
+GOES_FIRST = "choose"
+
 
 
 def prompt(msg)
   puts " => #{msg}"
+end
+
+def who_goes?(first_player, second_player)
+    loop do
+    puts "Who should take the first move? You(y) or the computer(c)?"
+    ans = gets.chomp.downcase
+    if ans == 'y'
+      first_player << 'player'
+      second_player << 'computer'
+      break
+    elsif ans == 'c'
+      first_player << 'computer'
+      second_player << 'player'
+      break
+    else
+      puts "sorry thats not a valid option"
+    end
+  end
 end
 
 # rubocop:disable Metrics/AbcSize
@@ -29,7 +49,6 @@ def display_board(brd, player_score, computer_score, round)
   puts "  #{brd[7]}  |  #{brd[8]}  |  #{brd[9]}"
   puts "     |     |"
   puts "            "
-  # puts "Player #{score_hash[:player]}, Computer #{ score_hash[:computer]}"
   puts "Round #{round}. The first to 5 wins the game!" unless player_score == 5 || computer_score == 5
   puts "Player has #{player_score}, Computer has #{computer_score}"
 end
@@ -93,21 +112,25 @@ def player_places_piece!(brd)
 end
 
 def computer_places_piece!(brd)
+
   square = nil
 
   WINNING_LINES.each do |line|
-    square = detect_at_risk_square(line, brd, PLAYER_PIECE)  
+    square = detect_at_risk_square(line, brd, COMPUTER_PIECE)  
     if square
       break
-    else square = detect_at_risk_square(line, brd, COMPUTER_PIECE)
+    elsif square = detect_at_risk_square(line, brd, PLAYER_PIECE)
       break if square
+    else 
+      if empty_squares(brd).include?(5)
+        square = 5
+      end
     end
   end
 
   if !square
     square = empty_squares(brd).sample 
   end
-
   brd[square] = COMPUTER_PIECE
 end
 
@@ -152,20 +175,32 @@ def detect_winner(brd)
 end
 
 
+
 loop do
   player_score = 0
   computer_score = 0
   round = 1
 
+
     loop do # main game loop
       board = initialize_board
+      first_player = ''
+      second_player = ''
+      if GOES_FIRST == "choose"
+        who_goes?(first_player, second_player)
+      else
+        first_player = 'player'
+        second_player = 'computer'
+      end
+
       loop do
         display_board(board, player_score, computer_score, round)
-        
-        player_places_piece!(board)
+        # binding.pry
+        send(:"#{first_player}_places_piece!", board)
+        display_board(board, player_score, computer_score, round)
         break if someone_won?(board) || board_full?(board)
        
-        computer_places_piece!(board)
+        send(:"#{second_player}_places_piece!", board)
         display_board(board, player_score, computer_score, round)
         break if someone_won?(board) || board_full?(board)
      
@@ -178,10 +213,11 @@ loop do
       display_board(board, player_score, computer_score, round)
 
       if someone_won?(board)
-        prompt("#{detect_winner(board)} wins the game!")
+        prompt("#{detect_winner(board)} wins the round!")
       else
         prompt("It's a tie")
       end
+      #messages not shown if not on a choose loop.
 
       break if player_score == 5 || computer_score == 5
     end
