@@ -41,15 +41,50 @@ def initialize_board
   new_board
 end
 
-# == IMPORTANT. NOT SETTING ASKING IF ITS EQUAL.
 def empty_squares(brd)
   brd.keys.select { |num| brd[num] == INITIAL_MARKER }
 end
 
+# ******* methods for improved join method ******
+def adding_punctuation!(ary, punctuation, h)
+  ary.each do |number|
+    if number == ary[-2] || number == ary[-1]
+      h[number] = ""
+    else
+      h[number] = punctuation
+    end  
+  end
+  h
+end
+
+def ary_to_hash!(ary2, h)
+   h.each do |key, value|
+    ary2 << key.to_s + value.to_s
+  end
+  ary2
+end
+
+def insert_ending_and_convert_to_string!(ary2, final_joiner)
+  ary2.insert(-2, final_joiner).join(' ')
+end
+
+def joiner(ary, punctuation = ',', final_joiner = 'or' )
+  h = {}
+  ary2 = []
+  if ary.size > 1
+  adding_punctuation!(ary, punctuation, h)
+  ary_to_hash!(ary2, h)
+  insert_ending_and_convert_to_string!(ary2, final_joiner)
+else
+  ary.join
+  end
+end
+# ****************************
+
 def player_places_piece!(brd)
   square = ''
   loop do
-    prompt("Please select a square #{empty_squares(brd).join(', ')}:")
+    prompt("Please select a square #{joiner(empty_squares(brd))}:")
     square = gets.chomp.to_i
     break if empty_squares(brd).include?(square)
     prompt('Sorry thats not a valid choice')
@@ -59,30 +94,45 @@ end
 
 def computer_places_piece!(brd)
   square = nil
-  # square = detect_immediate_threat(brd)  
-  binding.pry
-  if detect_immediate_threat(brd) == nil
-# detect an immediate threat is not returning nil at anypoint for somereson.
-    square = empty_squares(brd).sample
-    brd[square] = COMPUTER_PIECE
-  end
-  
-end
 
-def detect_immediate_threat(brd)
   WINNING_LINES.each do |line|
-    if brd.values_at(line[0], line[1]).count(PLAYER_PIECE) == 2 
-      brd[line[2]] = COMPUTER_PIECE
-    elsif brd.values_at(line[0], line[2]).count(PLAYER_PIECE) == 2
-      brd[line[1]] = COMPUTER_PIECE
-    elsif brd.values_at(line[1], line[2]).count(PLAYER_PIECE) == 2
-      brd[line[0]] = COMPUTER_PIECE
-    else
-      nil
+    square = detect_immediate_threat(line, brd)  
+    if square
+      break
+    else square = detect_possible_comp_win(line, brd)
+      break if square
     end
   end
+
+  if !square
+    square = empty_squares(brd).sample 
+  end
+
+  brd[square] = COMPUTER_PIECE
 end
 
+
+def detect_immediate_threat(line, brd)
+    if brd.values_at(*line).count(PLAYER_PIECE) == 2
+      brd.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
+       # first part selects  key/value pair from brd array where value == ' '
+       # This returns a hash with one pair {9 => ' '}
+       # don't know how it knows to select the key/value pair of the line thats a threat?
+       # as line above returns true. So all lines go into the block.
+       # .keys selects the key out and returns as an array [9]
+       # .first returns the integer 9 from the array.
+    else
+     nil
+    end
+end
+
+def detect_possible_comp_win(line, brd)
+  if brd.values_at(*line).count(COMPUTER_PIECE) == 2
+      brd.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
+    else
+     nil
+    end
+end
 
 def board_full?(brd)
   empty_squares(brd).empty?
@@ -110,21 +160,7 @@ def detect_winner(brd)
 end
 
 
-# def score(detect_winner_output, score_hash) 
-#  if detect_winner_output == "player"
-#     score_hash[:player] += 1
-#   elsif detect_winner_output == "computer"
-#     score_hash[:computer] += 1
-#   else detect_winner_output == nil
-#     score_hash[:player] += 1
-#     score_hash[:computer] += 1
-#   end
-#   score_hash
-# end
-
-
 loop do
-# score_hash = {player: 0, computer: 0}
   player_score = 0
   computer_score = 0
   round = 1
