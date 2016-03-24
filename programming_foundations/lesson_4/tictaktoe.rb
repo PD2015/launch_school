@@ -96,10 +96,10 @@ def computer_places_piece!(brd)
   square = nil
 
   WINNING_LINES.each do |line|
-    square = detect_immediate_threat(line, brd)  
+    square = detect_at_risk_square(line, brd, PLAYER_PIECE)  
     if square
       break
-    else square = detect_possible_comp_win(line, brd)
+    else square = detect_at_risk_square(line, brd, COMPUTER_PIECE)
       break if square
     end
   end
@@ -112,8 +112,8 @@ def computer_places_piece!(brd)
 end
 
 
-def detect_immediate_threat(line, brd)
-    if brd.values_at(*line).count(PLAYER_PIECE) == 2
+def detect_at_risk_square(line, brd, marker)
+    if brd.values_at(*line).count(marker) == 2
       brd.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
        # first part selects  key/value pair from brd array where value == ' '
        # This returns a hash with one pair {9 => ' '}
@@ -121,14 +121,6 @@ def detect_immediate_threat(line, brd)
        # as line above returns true. So all lines go into the block.
        # .keys selects the key out and returns as an array [9]
        # .first returns the integer 9 from the array.
-    else
-     nil
-    end
-end
-
-def detect_possible_comp_win(line, brd)
-  if brd.values_at(*line).count(COMPUTER_PIECE) == 2
-      brd.select{|k,v| line.include?(k) && v == INITIAL_MARKER}.keys.first
     else
      nil
     end
