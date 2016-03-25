@@ -8,7 +8,7 @@
 # 6. If dealer bust, player wins.
 # 7. Compare cards and declare winner.
 
-
+require 'pry'
 
 
 def prompt(msg)
@@ -59,17 +59,35 @@ def card_total(player_ary)
 end
 
 def winner?(card_total, p_cards, c_cards)
-  if card_total(p_cards) > card_total(c_cards) && card_total(p_cards) <= 21
+  player_total = card_total(p_cards)
+  dealer_total = card_total(c_cards)
+  if player_total > dealer_total && player_total <= 21
     "You Won!"
-  elsif card_total(p_cards) < card_total(c_cards) && card_total(c_cards) <= 21 
+  elsif player_total < dealer_total && dealer_total <= 21 
     "The dealer Won."
-  elsif card_total(p_cards) < card_total(c_cards) && card_total(p_cards) <= 21
+  elsif player_total < dealer_total && player_total <= 21
     "You Won! The Dealer went bust."
-  elsif card_total(p_cards) > 21
+  elsif player_total > 21
     "Sorry, thats you bust. The dealer Wins"
-  else card_total(p_cards) == card_total(c_cards)
+  else player_total == dealer_total
     "It's a Draw!"
   end
+end
+
+def adding_to_scores(result_message, player_score, dealer_score)
+  case result_message
+  when "You've won" 
+    player_score.replace([player_score[0] + 1])
+  when "You Won! The Dealer went bust."
+    player_score.replace([player_score[0] + 1])
+  when "The dealer Won." 
+    dealer_score.replace([dealer_score[0] + 1])
+  when "Sorry, thats you bust. The dealer Wins"
+     dealer_score.replace([dealer_score[0] + 1])
+  when "It's a Draw!"
+     player_score.replace([player_score[0] + 1]) 
+    dealer_score.replace([dealer_score[0] + 1])
+  end 
 end
 
 def joiner(player_ary, delimiter = ',', word = 'and')
@@ -82,9 +100,10 @@ def joiner(player_ary, delimiter = ',', word = 'and')
    output.join( delimiter)
 end
 
+# ******* END of Methods ***********
 
-player_wins = 0
-dealer_wins = 0
+player_score = [0]
+dealer_score = [0]
 round = 1
 
 loop do
@@ -98,11 +117,11 @@ loop do
    
     loop do
       system 'clear'
-      puts "Round #{round}: You've won: #{player_wins}, the dealer has won: #{dealer_wins}."
+      puts "Round #{round}: You've won: #{player_score}, the dealer has won: #{dealer_score}."
       puts "Dealer has: #{c_cards[0][1]} and unknown card"
-      #puts "You have: #{p_cards[0][1]} and #{p_cards[1][1]}"
       puts "You have: #{joiner(p_cards)}, thats a total of: #{card_total(p_cards)}"
-      break if card_total(p_cards) > 21
+      player_total = card_total(p_cards)
+      break if player_total > 21
       prompt("Do you want to hit(h) or stay(s)?")
       player_decision = gets.chomp.downcase
       if player_decision == 's'  
@@ -114,29 +133,21 @@ loop do
 
     loop do
       #deal for computer
-      break if card_total(p_cards) > 21 || card_total(c_cards) >= 17 
+      dealer_total = card_total(c_cards)
+      break if card_total(p_cards) > 21 || dealer_total >= 17 
       deal_1_card(deck, c_cards)
     end
-
+    # can't use the local variables player/dealer_total outside their loops. variables defined outside can be used within. Those defined within can't be used outside.
+    # inefficient use of local variable player/dealer_total here but put in to remark on.
     system 'clear'
-    puts winner?(card_total(p_cards), p_cards, c_cards)
-    if winner?(card_total(p_cards), p_cards, c_cards) == "You've won" ||
-       winner?(card_total(p_cards), p_cards, c_cards) == "You Won! The Dealer went bust." 
-      player_wins += 1
-    elsif winner?(card_total(p_cards), p_cards, c_cards) == "The dealer Won." || 
-         winner?(card_total(p_cards), p_cards, c_cards) == "Sorry, thats you bust. The dealer Wins"
-      dealer_wins += 1
-    else winner?(card_total(p_cards), p_cards, c_cards) == "It's a Draw!"
-      player_wins += 1
-      dealer_wins += 1
-    end
-
+    result_message = p winner?(card_total(p_cards), p_cards, c_cards)
+    adding_to_scores(a, player_score, dealer_score)
     puts "You had: #{joiner(p_cards)}, that totals: #{card_total(p_cards)}"
     puts "Dealer had: #{joiner(c_cards)}, that totals: #{card_total(c_cards)}"
     break
   end
 
-  puts "Round #{round}: You've won: #{player_wins}, the dealer has won: #{dealer_wins}."
+  puts "Round #{round}: You've won: #{player_score}, the dealer has won: #{dealer_score}."
   prompt('Would you like to play again? (y/n)')
   ans = gets.chomp.downcase 
   break unless ans == 'y'
