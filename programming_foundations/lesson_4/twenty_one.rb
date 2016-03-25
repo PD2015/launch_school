@@ -10,6 +10,8 @@
 
 require 'pry'
 
+NUMBER_TO_PLAY_FOR = 21
+DEALER_STICK_VALUE = 17
 
 def prompt(msg)
   puts "=> #{msg}"
@@ -50,7 +52,7 @@ def card_total(player_ary)
       end
   end
 
-    if sum > 21 
+    if sum > NUMBER_TO_PLAY_FOR 
       values.select {|value| value == 'A'}.count.times do
         sum -= 10
       end
@@ -61,13 +63,13 @@ end
 def winner?(card_total, p_cards, c_cards)
   player_total = card_total(p_cards)
   dealer_total = card_total(c_cards)
-  if player_total > dealer_total && player_total <= 21
+  if player_total > dealer_total && player_total <= NUMBER_TO_PLAY_FOR
     "You Won!"
-  elsif player_total < dealer_total && dealer_total <= 21 
+  elsif player_total < dealer_total && dealer_total <= NUMBER_TO_PLAY_FOR 
     "The dealer Won."
-  elsif player_total < dealer_total && player_total <= 21
+  elsif player_total < dealer_total && player_total <= NUMBER_TO_PLAY_FOR
     "You Won! The Dealer went bust."
-  elsif player_total > 21
+  elsif player_total > NUMBER_TO_PLAY_FOR
     "Sorry, thats you bust. The dealer Wins"
   else player_total == dealer_total
     "It's a Draw!"
@@ -117,11 +119,11 @@ loop do
    
     loop do
       system 'clear'
-      puts "Round #{round}: You've won: #{player_score}, the dealer has won: #{dealer_score}."
-      puts "Dealer has: #{c_cards[0][1]} and unknown card"
-      puts "You have: #{joiner(p_cards)}, thats a total of: #{card_total(p_cards)}"
       player_total = card_total(p_cards)
-      break if player_total > 21
+      puts "Round #{round}: You've won: #{player_score[0]}, the dealer has won: #{dealer_score[0]}."
+      puts "Dealer has: #{c_cards[0][1]} and unknown card"
+      puts "You have: #{joiner(p_cards)}, thats a total of: #{player_total}"
+      break if player_total > NUMBER_TO_PLAY_FOR
       prompt("Do you want to hit(h) or stay(s)?")
       player_decision = gets.chomp.downcase
       if player_decision == 's'  
@@ -134,20 +136,20 @@ loop do
     loop do
       #deal for computer
       dealer_total = card_total(c_cards)
-      break if card_total(p_cards) > 21 || dealer_total >= 17 
+      break if card_total(p_cards) > NUMBER_TO_PLAY_FOR || dealer_total >= DEALER_STICK_VALUE 
       deal_1_card(deck, c_cards)
     end
     # can't use the local variables player/dealer_total outside their loops. variables defined outside can be used within. Those defined within can't be used outside.
     # inefficient use of local variable player/dealer_total here but put in to remark on.
     system 'clear'
     result_message = p winner?(card_total(p_cards), p_cards, c_cards)
-    adding_to_scores(a, player_score, dealer_score)
+    adding_to_scores(result_message, player_score, dealer_score)
     puts "You had: #{joiner(p_cards)}, that totals: #{card_total(p_cards)}"
     puts "Dealer had: #{joiner(c_cards)}, that totals: #{card_total(c_cards)}"
     break
   end
 
-  puts "Round #{round}: You've won: #{player_score}, the dealer has won: #{dealer_score}."
+  puts "Round #{round}: You've won: #{player_score[0]}, the dealer has won: #{dealer_score[0]}."
   prompt('Would you like to play again? (y/n)')
   ans = gets.chomp.downcase 
   break unless ans == 'y'
