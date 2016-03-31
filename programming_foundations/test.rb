@@ -41,3 +41,20 @@ end
 # p insert_ending_and_convert_to_string!(ary2, param = "or")
 
 p joiner(ary, param1 = ',', param2 = 'or' )
+
+
+
+
+
+
+
+
+
+def joinor(arr, delimiter=', ', word='or')
+   arr[-1] = "#{word} #{arr.last}" if arr.size > 1
+   arr.join(delimiter)
+end
+
+joinor([1, 2, 3], ', ', 'and')
+
+
