@@ -20,11 +20,11 @@ munsters.each do |name, details|
 
   if details["gender"] == "male"
    ages << details["age"]
-   total = ages.inject(:+)
   end
 end
 
-  total
+ total = ages.inject(:+)
+ puts total
 
 
 ********************
@@ -169,7 +169,7 @@ paper
 
 
 ========================================================
-Q8)
+Q9)
 
 Consider these two simple methods:
 

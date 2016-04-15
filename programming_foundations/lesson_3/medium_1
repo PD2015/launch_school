@@ -36,6 +36,16 @@ result ={}
 letters = ('A'..'Z').to_a + ('a'..'z').to_a 
 sarray = statement.split("")
 all wrong.
+
+---------------
+h ={}
+("a".."z").each do |letter|
+  if statement.downcase.include?(letter)
+  h[letter] = statement.downcase.count(letter)
+  end
+end
+
+h
 ***
 
 Official:
@@ -274,6 +284,17 @@ munsters.each do |name, details|
   
 end
 
+------
+munsters.each do |name, hash2|
+  hash2["age_group"] = case hash2["age"]
+  when(0..17)
+    "kid"
+  when(18..64)
+   "adult"
+  else 
+   "senior"
+  end
+end
 **********************
 
 
