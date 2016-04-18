@@ -35,10 +35,23 @@ class Move
 end
 
 class Player
-  attr_accessor :move, :name
+  attr_accessor :move, :name, :score
 
   def initialize
+    @score = 0
     set_name
+  end
+
+  def increment_score!
+    self.score += 1
+  end
+
+  def display_score
+    print "#{self.name} has: #{self.score}  "
+  end
+
+  def score_reset
+    self.score = 0
   end
 end
 
@@ -89,6 +102,7 @@ class RPSGame
 
   def display_welcome_message
     puts "Hello #{human.name}. Welcome to the Rock, Paper, Scissors Game!"
+    puts "The first player to 10 points wins the match!"
   end
 
   def display_move
@@ -99,11 +113,38 @@ class RPSGame
   def display_winner
     if human.move > computer.move
       puts 'You Win!'
+      human.increment_score!
     elsif human.move < computer.move
       puts 'You Loose!'
+      computer.increment_score!
     else
       puts 'Its a Tie!'
+      human.increment_score!
+      computer.increment_score!
     end
+  end
+
+  def score_output
+    puts "***********************"
+    puts "#{human.display_score}"
+    puts "#{computer.display_score}"
+    puts "***********************"
+  end
+
+  def display_match_winner
+    if human.score == 10
+      puts "Well done #{human.name}, You've won the match! "
+      return true
+    elsif computer.score == 10
+      puts "You've Lost the Match! The Computers Won!!"
+      return true
+    end
+    return false
+  end
+
+  def score_reset
+    human.score_reset
+    computer.score_reset
   end
 
   def play_again?
@@ -123,15 +164,24 @@ class RPSGame
   end
 
   def play
+    system 'clear'
     display_welcome_message
-    loop do
-      human.choose
-      computer.choose
-      display_move
-      display_winner
-      break unless play_again?
-    end
-    display_goodbye_message
+    # loop do
+    # score_reset
+    # score_output
+      loop do
+        human.choose
+        computer.choose
+        system 'clear'
+        display_move
+        display_winner
+        score_output
+        break if !!display_match_winner
+        break unless play_again?
+      end 
+    # break unless play_again?
+    # end
+     display_goodbye_message
   end
 end
 
