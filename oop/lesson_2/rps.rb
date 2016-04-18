@@ -1,5 +1,5 @@
 class Move
-  VALUES = ['rock', 'paper', 'scissors']
+  VALUES = ['rock', 'paper', 'scissors', 'lizard', 'spock']
   attr_reader :value
 
   def initialize(value)
@@ -18,16 +18,28 @@ class Move
     @value == 'scissors'
   end
 
+  def lizard?
+    @value == 'lizard'
+  end
+
+  def spock?
+    @value == 'spock'
+  end
+
   def >(other_value)
-    (rock? && other_value.scissors?) ||
-      (paper? && other_value.rock?) ||
-      (scissors? && other_value.paper?)
+    (rock? && (other_value.scissors? || other_value.lizard?)) ||
+      (paper? && (other_value.rock? || other_value.spock?)) ||
+      (scissors? && (other_value.paper? || other_value.lizard?)) ||
+      (lizard? && (other_value.paper? || other_value.spock?)) ||
+      (spock? &&(other_value.scissors? || other_value.rock?))
   end
 
   def <(other_value)
-    (rock? && other_value.paper?) ||
-      (paper? && other_value.scissors?) ||
-      (scissors? && other_value.rock?)
+    (rock? && (other_value.paper? || other_value.spock?)) ||
+      (paper? && (other_value.scissors? || other_value.lizard?)) ||
+      (scissors? && (other_value.rock? || other_value.spock?)) ||
+      (lizard? && (other_value.scissors? || other_value.rock?)) ||
+      (spock? && (other_value.paper? || other_value.lizard?))
   end
   # def to_s
   #   @value
@@ -70,7 +82,7 @@ class Human < Player
   def choose
     human_choice = nil
     loop do
-      puts "Please make a choice: Rock, Paper or Scissors?"
+      puts "Please make a choice: Rock, Paper, Scissors, Lizard or Spock?"
       human_choice = gets.chomp.downcase
       if Move::VALUES.include?(human_choice)
         break
@@ -101,7 +113,7 @@ class RPSGame
   end
 
   def display_welcome_message
-    puts "Hello #{human.name}. Welcome to the Rock, Paper, Scissors Game!"
+    puts "Hello #{human.name}. Welcome to the Rock, Paper, Scissors, Lizard, Spock Game!"
     puts "The first player to 10 points wins the match!"
   end
 
