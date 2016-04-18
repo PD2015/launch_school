@@ -1,6 +1,6 @@
 class Move
   VALUES = ['rock', 'paper', 'scissors', 'lizard', 'spock']
-  attr_reader :value
+  attr_reader :value 
 
   def initialize(value)
     @value = value
@@ -44,13 +44,15 @@ class Move
   # def to_s
   #   @value
   # end
+
 end
 
 class Player
-  attr_accessor :move, :name, :score
+  attr_accessor :move, :name, :score, :move_history
 
   def initialize
     @score = 0
+    @move_history = []
     set_name
   end
 
@@ -65,6 +67,7 @@ class Player
   def score_reset
     self.score = 0
   end
+
 end
 
 class Human < Player
@@ -91,6 +94,7 @@ class Human < Player
       end
     end
     self.move = Move.new(human_choice)
+    self.move_history << self.move.value
   end
 end
 
@@ -101,6 +105,7 @@ class Computer < Player
 
   def choose
     self.move = Move.new(Move::VALUES.sample)
+    self.move_history << self.move.value
   end
 end
 
@@ -144,10 +149,10 @@ class RPSGame
   end
 
   def display_match_winner
-    if human.score == 10
+    if human.score == 2
       puts "Well done #{human.name}, You've won the match! "
       return true
-    elsif computer.score == 10
+    elsif computer.score == 2
       puts "You've Lost the Match! The Computers Won!!"
       return true
     end
@@ -157,6 +162,13 @@ class RPSGame
   def score_reset
     human.score_reset
     computer.score_reset
+  end
+
+  def display_history
+    puts "#{human.name}'s choice history:"
+    human.move_history.each_with_index { |choice, idx| puts "#{idx + 1}: #{choice}" }
+    puts "#{computer.name}'s choice history:"
+    computer.move_history.each_with_index { |choice, idx| puts "#{idx + 1}: #{choice}" }
   end
 
   def play_again?
@@ -188,7 +200,8 @@ class RPSGame
         display_move
         display_winner
         score_output
-        break if !!display_match_winner
+        display_history
+        break if display_match_winner
         break unless play_again?
       end 
     # break unless play_again?
