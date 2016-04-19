@@ -103,8 +103,8 @@ class TTTGame
     puts "Welcome to Noughts and Crosses!"
   end
 
-  def display_board(clear_screen= true)
-  clear if clear_screen
+  def display_board(options = {clear_screen: true})
+  clear if options[:clear_screen]
   puts "You are #{human.marker}, computer is #{computer.marker}"  
   puts "            "
   puts "     |     |"
@@ -171,7 +171,7 @@ class TTTGame
     display_welcome_message
     loop do
       
-      display_board(false)
+      display_board(clear_screen: false)
       loop do
         human_moves
         break if board.someone_won? || board.full?
