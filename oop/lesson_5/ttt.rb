@@ -95,12 +95,16 @@ class TTTGame
     @computer = Player.new(COMPUTER_MARKER)
   end
 
+  def clear
+    system 'clear'
+  end
+
   def display_welcome_message
     puts "Welcome to Noughts and Crosses!"
   end
 
-  def display_board(clear= true)
-  system 'clear' if clear
+  def display_board(clear_screen= true)
+  clear if clear_screen
   puts "You are #{human.marker}, computer is #{computer.marker}"  
   puts "            "
   puts "     |     |"
@@ -160,10 +164,10 @@ class TTTGame
     puts 'Thanks for playing, see you next time'
   end
 
-
+  
 
   def play
-    system 'clear'
+    clear
     display_welcome_message
     loop do
       
@@ -179,7 +183,7 @@ class TTTGame
       display_result
       break unless play_again?
       board.reset
-      system 'clear'
+      clear
       puts "Lets play again!"
       puts ""
     end
