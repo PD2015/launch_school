@@ -10,6 +10,19 @@ class Board
     reset
   end
 
+  def draw
+  puts "     |     |"
+  puts "  #{get_square(1)}  |  #{get_square(2)}  |  #{get_square(3)}"
+  puts "     |     |"
+  puts "-----+-----+-----"
+  puts "     |     |"
+  puts "  #{get_square(4)}  |  #{get_square(5)}  |  #{get_square(6)}"
+  puts "     |     |"
+  puts "-----+-----+-----"
+  puts "     |     |"
+  puts "  #{get_square(7)}  |  #{get_square(8)}  |  #{get_square(9)}"
+  end
+
   def get_square(key)
     @squares[key]
   end
@@ -109,20 +122,11 @@ class TTTGame
   end
 
   def display_board
-  puts "You are #{human.marker}, computer is #{computer.marker}"  
-  puts "            "
-  puts "     |     |"
-  puts "  #{board.get_square(1)}  |  #{board.get_square(2)}  |  #{board.get_square(3)}"
-  puts "     |     |"
-  puts "-----+-----+-----"
-  puts "     |     |"
-  puts "  #{board.get_square(4)}  |  #{board.get_square(5)}  |  #{board.get_square(6)}"
-  puts "     |     |"
-  puts "-----+-----+-----"
-  puts "     |     |"
-  puts "  #{board.get_square(7)}  |  #{board.get_square(8)}  |  #{board.get_square(9)}"
-  puts "     |     |"
-  puts "            "
+    puts "You are #{human.marker}, computer is #{computer.marker}"  
+    puts "            "
+    board.draw
+    puts "     |     |"
+    puts "            "
   end
 
   def human_moves
