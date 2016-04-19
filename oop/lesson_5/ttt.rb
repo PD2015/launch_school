@@ -12,19 +12,15 @@ class Board
 
   def draw
   puts "     |     |"
-  puts "  #{get_square(1)}  |  #{get_square(2)}  |  #{get_square(3)}"
+  puts "  #{@squares[1]}  |  #{@squares[2]}  |  #{@squares[3]}"
   puts "     |     |"
   puts "-----+-----+-----"
   puts "     |     |"
-  puts "  #{get_square(4)}  |  #{get_square(5)}  |  #{get_square(6)}"
+  puts "  #{@squares[4]}  |  #{@squares[5]}  |  #{@squares[6]}"
   puts "     |     |"
   puts "-----+-----+-----"
   puts "     |     |"
-  puts "  #{get_square(7)}  |  #{get_square(8)}  |  #{get_square(9)}"
-  end
-
-  def get_square(key)
-    @squares[key]
+  puts "  #{@squares[7]}  |  #{@squares[8]}  |  #{@squares[9]}"
   end
 
   def set_square_at(key, marker)
