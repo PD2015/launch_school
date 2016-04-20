@@ -40,21 +40,11 @@ class Board
     !!winning_marker
   end
 
-  def count_human_marker(squares)
-    squares.collect(&:mark).count(TTTGame::HUMAN_MARKER)
-  end
-
-  def count_computer_marker(squares)
-    squares.collect(&:mark).count(TTTGame::COMPUTER_MARKER)
-  end
-
   def winning_marker
     WINNING_LINES.each do |line|
-
-      if count_human_marker(@squares.values_at(*line)) == 3
-        return TTTGame::HUMAN_MARKER
-      elsif count_computer_marker(@squares.values_at(*line)) == 3
-        return TTTGame::COMPUTER_MARKER
+      squares = @squares.values_at(*line)
+      if three_identical_markers?(squares)     
+        return squares.first.mark             
       end
     end
     nil
@@ -62,6 +52,19 @@ class Board
 
   def reset
     (1..9).each { |key| @squares[key] = Square.new }
+  end
+
+  private
+  def three_identical_markers?(squares)
+    markers = squares.select(&:marked?).collect(&:mark)
+    # this will select all square objects from the 3 squares that make up the line, if they
+    # have a mark != INITIAL_MARKER. So will select the square objects. Then the collect method
+    # will run square.mark on each square object to return an array of the marks of each square.
+    return false if markers.size != 3
+    markers.min == markers.max
+    # will return the string of the array that containes the letter closest to A. Max to Z,
+    # if these are the same = 3 strings the same.
+    # or markers.uniq!.size == 1 
   end
 
 end
@@ -76,6 +79,10 @@ class Square
 
   def unmarked?
      mark == INITIAL_MARKER
+  end
+
+  def marked?
+    mark != INITIAL_MARKER
   end
 
   def to_s
