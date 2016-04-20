@@ -1,5 +1,5 @@
 require 'pry'
-
+# *****************************BOARD*****************************
 class Board
   WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] + # lines
                   [[1, 4, 7], [2, 5, 8], [3, 6, 9]] + # columns
@@ -70,7 +70,6 @@ class Board
   def detect_immediate_threat
     WINNING_LINES.each do |line|
       squares = @squares.values_at(*line)
-      # if two_identical_markers?(squares)
         if two_oponent_markers?(squares)
           return find_at_risk_square(squares)
         end
@@ -125,7 +124,7 @@ class Board
     markers.uniq.size == 1 && markers.first == TTTGame::COMPUTER_MARKER
   end
 end
-
+# *****************************SQUARE*****************************
 class Square
   INITIAL_MARKER = ' '
   attr_accessor :mark
@@ -146,7 +145,7 @@ class Square
     @mark
   end
 end
-
+# *****************************PLAYER*****************************
 class Player
   attr_reader :marker 
   attr_accessor :score
@@ -156,11 +155,11 @@ class Player
     @score = 0
   end
 end
-
+# *****************************TTTGAME*****************************
 class TTTGame
   HUMAN_MARKER = 'X'
   COMPUTER_MARKER = 'O'
-  FIRST_TO_MOVE = HUMAN_MARKER
+  FIRST_TO_MOVE = COMPUTER_MARKER
   attr_reader :board, :human, :computer
 
   def initialize
@@ -168,11 +167,13 @@ class TTTGame
     @human = Player.new(HUMAN_MARKER)
     @computer = Player.new(COMPUTER_MARKER)
     @current_marker = FIRST_TO_MOVE
+    @first_to_move = 'choose'
   end
 
   def play
     clear
     display_welcome_message
+    display_first_to_move_choice if @first_to_move
     loop do
       display_board
       display_scores
@@ -205,6 +206,27 @@ class TTTGame
     puts "The first player to 5 points wins the game!"
   end
 
+  def display_first_to_move_choice
+    answer = ''
+    loop do 
+      puts "Choose who you would like to go first, you(me) or the computer(c)?"
+      answer = gets.chomp.downcase
+      break if ['me', 'c'].include?(answer)
+      puts "Sorry thats not a valid choice"
+    end
+    set_current_marker(answer)
+  end
+
+  def set_current_marker(answer)
+    if answer == 'me'
+      @current_marker = HUMAN_MARKER
+      @first_to_move = HUMAN_MARKER
+    else
+      @current_marker = COMPUTER_MARKER
+      @first_to_move = COMPUTER_MARKER
+    end
+  end
+
   def clear_screen_and_display_board
     clear
     display_board
@@ -230,11 +252,12 @@ class TTTGame
   end
 
   def computer_moves
-     # binding.pry
     if board.detect_possible_win 
       board[board.detect_possible_win] = computer.marker
     elsif board.detect_immediate_threat
        board[board.detect_immediate_threat] = computer.marker
+    elsif board.unmarked_keys.include?(5)
+      board[5] = computer.marker
     elsif
       board[board.unmarked_keys.sample] = computer.marker
     end
@@ -304,7 +327,7 @@ class TTTGame
 
   def reset
     board.reset
-    @current_marker = FIRST_TO_MOVE
+    @current_marker = @first_to_move
     clear
   end
 
