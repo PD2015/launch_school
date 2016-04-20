@@ -67,6 +67,17 @@ class Board
     nil
   end
 
+  def immediate_threat
+    WINNING_LINES.each do |line|
+      squares = @squares.values_at(*line)
+      if two_identical_markers?(squares)
+        empty_square_array = squares.select { |sq| sq.mark == Square::INITIAL_MARKER }
+        return @squares.key(empty_square[0])
+      end
+    end
+    nil
+  end
+
   def reset
     (1..9).each { |key| @squares[key] = Square.new }
   end
@@ -83,6 +94,12 @@ class Board
     # will return the string of the array that containes the letter closest to A. Max to Z,
     # if these are the same = 3 strings the same.
     # or markers.uniq!.size == 1
+  end
+
+  def two_identical_markers?(squares)
+    markers = squares.select(&:marked?).collect(&:mark)
+    return false if markers.size != 2
+    markers.uniq.size == 1
   end
 end
 
@@ -190,7 +207,12 @@ class TTTGame
   end
 
   def computer_moves
-    board[board.unmarked_keys.sample] = computer.marker
+     # binding.pry
+    if board.immediate_threat == nil
+      board[board.unmarked_keys.sample] = computer.marker
+    else
+      board[board.immediate_threat] = computer.marker
+    end
   end
 
   def human_turn?
