@@ -23,7 +23,7 @@ class Board
   puts "  #{@squares[7]}  |  #{@squares[8]}  |  #{@squares[9]}"
   end
 
-  def set_square_at(key, marker)
+  def []=(key, marker)
     @squares[key].mark = marker
   end
 
@@ -134,11 +134,11 @@ class TTTGame
       puts "Sorry thats not a valid choice"
     end
   
-    board.set_square_at(square, human.marker)
+    board[square] = human.marker
   end
 
   def computer_moves
-    board.set_square_at(board.unmarked_keys.sample, computer.marker)
+    board[board.unmarked_keys.sample] = computer.marker
   end
 
   def display_result
