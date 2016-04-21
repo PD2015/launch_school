@@ -1,34 +1,32 @@
-unmarked_keys = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-separator = ','
-final_separator = 'or'
+# class Player
 
+#   attr_reader :cards
 
+#   def initialize(cards)
+#     @cards = cards
+#     @card_pack = [['H', 'Ace'], ['H', '2'], ['H', '3'], ['H', '4'], ['H', '5'], ['H', '6'], ['H', '7'], ['H', '8'], ['H', '9'], ['H', '10'], ['H', 'Jack'], ['H', 'Queen'], ['H', 'King']] +
+#                  [['D', 'Ace'], ['D', '2'], ['D', '3'], ['D', '4'], ['D', '5'], ['D', '6'], ['D', '7'], ['D', '8'], ['D', '9'], ['D', '10'], ['D', 'Jack'], ['D', 'Queen'], ['D', 'King']] +
+#                  [['S', 'Ace'], ['S', '2'], ['S', '3'], ['S', '4'], ['S', '5'], ['S', '6'], ['S', '7'], ['S', '8'], ['S', '9'], ['S', '10'], ['S', 'Jack'], ['S', 'Queen'], ['S', 'King']] +
+#                  [['C', 'Ace'], ['C', '2'], ['C', '3'], ['C', '4'], ['C', '5'], ['C', '6'], ['C', '7'], ['C', '8'], ['C', '9'], ['C', '10'], ['C', 'Jack'], ['C', 'Queen'], ['C', 'King']] 
 
-# temp = unmarked_keys.map do |num|
-#   unless num == unmarked_keys.last || num == unmarked_keys[-2]
-#   num.to_s + separator
+#   end
+
+#   def shuffled_pack
+#     @card_pack.shuffle
+#   end
+
+#   def pack
+#     shuffled_pack
 #   end
 # end
 
-# temp.pop(2)
-# temp << unmarked_keys[-2]
-# temp.insert(-1, final_separator)
-# temp << unmarked_keys.last
+# array = [1, 2, 3]
+# jeff = Player.new(array)
+# p jeff.cards
+# p jeff.pack
 
+cards = [['a', '1'], ['b', '2'],['c', '3']]
 
-# p temp.join(' ')
+cards_total = cards.map {|card| card[1].to_i }.inject(:+)
 
- def joiner(unmarked_keys, separator = ',', final_separator= 'or')
-    unless unmarked_keys.size < 1
-      joiner_unmarked_keys = unmarked_keys.map do |num|
-        unless num == unmarked_keys[-2, 2]
-        num.to_s + separator
-        end
-      end
-    end
-    joiner_unmarked_keys.pop(1)
-    joiner_unmarked_keys[-1]= "#{unmarked_keys[-2]} #{final_separator} #{unmarked_keys.last}"
-    return joiner_unmarked_keys.join(' ')
-  end
-
-  p joiner(unmarked_keys)
+    p cards_total
