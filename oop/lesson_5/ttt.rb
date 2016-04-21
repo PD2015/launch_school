@@ -148,7 +148,7 @@ end
 # *****************************PLAYER*****************************
 class Player
   attr_reader :marker 
-  attr_accessor :score
+  attr_accessor :score, :name
 
   def initialize(marker)
     @marker = marker
@@ -168,11 +168,15 @@ class TTTGame
     @computer = Player.new(COMPUTER_MARKER)
     @current_marker = FIRST_TO_MOVE
     @first_to_move = 'choose'
+    # @human_marker = ''
+    # @computer_marker = ''
   end
 
   def play
     clear
+    set_player_names
     display_welcome_message
+    # display_choose_marker_message
     display_first_to_move_choice if @first_to_move
     loop do
       display_board
@@ -201,8 +205,26 @@ class TTTGame
     system 'clear'
   end
 
+  def set_human_name
+      loop do 
+        puts "Please enter your chosen game name..."
+        human.name = gets.chomp.downcase.capitalize
+        break unless human.name == ''
+        puts "sorry thats not a valid choice"
+      end
+  end
+
+  def set_computer_name
+    computer.name = ['Abicus', 'Wall-E', 'Deep-thought', 'Siri'].sample
+  end
+
+  def set_player_names
+    set_computer_name
+    set_human_name
+  end
+
   def display_welcome_message
-    puts "Welcome to Noughts and Crosses!"
+    puts "Hi #{human.name}, welcome to Noughts and Crosses!"
     puts "The first player to 5 points wins the game!"
   end
 
@@ -227,13 +249,34 @@ class TTTGame
     end
   end
 
+  # def display_choose_marker_message
+  #   chosen_marker = ''
+  #     loop do 
+  #       puts "Choose which marker you would like to represent you. X or O."
+  #       chosen_marker = gets.chomp.upcase
+  #       break if ['X', 'O'].include?(chosen_marker)
+  #       puts "sorry thats not a valid choice"
+  #     end
+  #   set_player_markers(chosen_marker)
+  # end
+
+  # def set_player_markers(chosen_marker)
+  #   if chosen_marker == 'X'
+  #     @human_marker = 'X'
+  #     @computer_marker = 'O'
+  #   else
+  #     @human_marker = 'O'
+  #     @computer_marker = 'X'
+  #   end
+  # end
+
   def clear_screen_and_display_board
     clear
     display_board
   end
 
   def display_board
-    puts "You are #{human.marker}, computer is #{computer.marker}"
+    puts "#{human.name} is #{human.marker}, #{computer.name} is #{computer.marker}"
     puts "            "
     board.draw
     puts "     |     |"
@@ -281,9 +324,9 @@ class TTTGame
     clear_screen_and_display_board
     case board.winning_marker
     when HUMAN_MARKER
-      puts "You Won!"
+      puts "#{human.name} Won!"
     when COMPUTER_MARKER
-      puts "You Lost!"
+      puts "#{human.name} Lost!"
     when nil
       puts "Its a Tie!"
     end
@@ -298,7 +341,7 @@ class TTTGame
   end
 
   def display_scores
-    puts "You have #{human.score}, the computer has #{computer.score}"
+    puts "score: #{human.name} has #{human.score}, #{computer.name} has #{computer.score}"
   end
 
   def game_won?
@@ -308,9 +351,9 @@ class TTTGame
   def display_game_result
      game_won?
      if human.score == 5
-      puts "You've got 5 points and won the game!!"
-    else
-      puts "The computer has beaten you to 5 points, you've lost the game:("
+      puts "#{human.name} you've got 5 points and won the game!!"
+    elsif computer.score == 5
+      puts "#{computer.name} has beaten you to 5 points, you've lost the game:("      
     end
   end
 
