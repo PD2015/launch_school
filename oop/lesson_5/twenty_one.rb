@@ -4,6 +4,7 @@ module Hand
   # what goes in here? all the redundant behaviors from Player and Dealer?
 
   def hit
+    cards << deck.deal_1
   end
 
   def stay
@@ -43,15 +44,34 @@ class Player
     end
   end
 
-  def display_cards
-    card_values = @cards.map do |card|
+  def card_values
+    @cards.map do |card|
       card[1]
     end
+  end
+
+  def display_card_values(param =card_values)
     joiner(card_values)
   end
 
-  def cards_total
-    @cards.map {|card| card[1].to_i }.inject(:+)
+  def cards_total(param =card_values)
+    sum = 0
+    card_values.each do |value|
+      if value == 'Ace'
+        sum += 11
+      elsif value.to_i == 0
+        sum += 10
+      else
+        sum += value.to_i
+      end
+    end
+
+    if sum > Game::NUMBER_TO_PLAY_FOR
+      card_values.count { |value| value == 'Ace' }.times do
+        sum -= 10
+      end
+    end
+    sum
   end
 
   
@@ -89,7 +109,7 @@ end
 # end
 # ************************** GAME ************************************
 class Game
-
+  NUMBER_TO_PLAY_FOR = 21
   attr_accessor :deck, :player, :dealer
 
   def initialize
@@ -110,7 +130,24 @@ class Game
   end
 
   def display_players_cards
-    puts "The player has #{player.display_cards} (total: #{player.cards_total} ), the Dealer has #{dealer.display_cards}, (total: #{dealer.cards_total})."
+    puts "The player has #{player.display_card_values} (total: #{player.cards_total} ), the Dealer has #{dealer.display_card_values}, (total: #{dealer.cards_total})."
+  end
+
+  def display_hit_or_stick_meassage
+    answer = ''
+    loop do
+      puts "Would you like to hit(h) or stick(s)? "
+      answer = gets.chomp.downcase
+      break if ['h', 's'].include?(answer)
+      puts "Sorry thats not a vaild choice"
+    end
+
+    if answer == 's'
+      puts "dealer_turn"
+    else
+      player.hit
+    end
+
   end
 
   def display_goodbye_message
@@ -122,6 +159,7 @@ class Game
     display_welcome_message
     deal_initial_cards
     display_players_cards
+    display_hit_or_stick_meassage
     # player_turn
     # dealer_turn
     # show_result

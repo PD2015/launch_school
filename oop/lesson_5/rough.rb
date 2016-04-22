@@ -25,8 +25,45 @@
 # p jeff.cards
 # p jeff.pack
 
-cards = [['a', '1'], ['b', '2'],['c', '3']]
+NUMBER_TO_PLAY_FOR = 21
 
-cards_total = cards.map {|card| card[1].to_i }.inject(:+)
+cards = [1, 2, 4, 'king', 'queen', 'Ace']
+sum = 0
+cards_total = cards.each do |card| 
+
+  if card == 'Ace'
+    sum += 11
+  elsif card.to_i == 0
+    sum += 10
+  elsif  
+    sum += card.to_i  
+  end
+
+end
+
+if sum > NUMBER_TO_PLAY_FOR
+    values.count { |value| value == 'Ace' }.times do
+      sum -= 10
+    end
+  end
+
+  p sum
 
     p cards_total
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
