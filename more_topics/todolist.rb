@@ -65,15 +65,15 @@ class TodoList
   end
 
   def size
-    p todos.size
+    todos.size
   end
 
   def first
-    puts todos[0]
+    todos[0]
   end
 
   def last
-    puts todos[-1]
+    todos[-1]
   end
 
   def item_at(position)
@@ -104,6 +104,75 @@ class TodoList
     todos.delete_at(position)
   end
 
+  def each
+    counter = 0
+    while counter < todos.size
+      yield(todos[counter])
+      counter += 1
+    end
+    self
+  end
+
+  # or
+  #  def each
+  #   @todos.each do |todo|
+  #     yield(todo)
+  #   end
+  # end
+
+  # def select
+  #   counter = 0
+  #   results = [ ]
+  #   while counter < todos.size
+  #     if yield(todos[counter])
+  #       results << todos[counter]
+  #     end
+  #     counter += 1
+  #   end
+  #   results    
+  # end
+
+  def select
+    list = TodoList.new(title)
+    todos.each do |todo|
+      list.add(todo) if yield(todo)
+    end
+    list
+  end
+
+  def to_a
+    todos
+  end
+
+  def done!
+    todos.each_index do |index|
+      mark_done_at(idx)
+    end
+  end
+
+  def find_by_title(string)
+    select { |todo| todo.title == string }.first 
+  end
+
+  def all_done!
+    select {|todo| todo.done? }
+  end
+
+  def all_not_done!
+    select { |todo| todo.undone! }
+  end
+
+  def mark_done(title)!
+    find_by_title(title).done!
+  end
+
+  def mark_all_done!
+    each { |todo| todo.done! }
+  end
+
+  def mark_all_undone!
+    each { |todo| todo.undone! }
+  end
 
 end
 
@@ -125,11 +194,18 @@ list.add(todo3)                 # adds todo3 to end of list, returns list
 # list.add(1)                     # raises TypeError with message "Can only add Todo objects"
 
 
+todo1.done!
+# list.find_by_title('Buy milk')
 
-list.pop
+# list.all_not_done
+list.mark_done('Go to gym')
+list.all_done
 puts list
-list.mark_done_at(1)
+list.mark_all_done
 puts list
+list.mark_all_undone
+puts list
+
 
 
 # # <<
