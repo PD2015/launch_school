@@ -1,3 +1,4 @@
+require 'pry'
 # This class represents a todo item and its associated
 # data: name and description. There's also a "done"
 # flag to show whether this todo item is done.
@@ -44,21 +45,23 @@ class TodoList
   end
 
   def to_s
-    puts "#{'-'*4} #{title} #{'-'*4}"
-    puts todos
+    text = "#{'-'*4} #{title} #{'-'*4}\n"
+    text << todos.map { |todo| todo.to_s }.join("\n")
+    text
   end
 
   def add(todo)
+    # could use todo.instance_of?(Todo)
     if todo.class == Todo
       todos << todo
       return to_s
     else
-      puts "TypeError: Can only add Todo objects"
+      raise TypeError, 'Can only add Todo objects'
     end
   end
 
-  def <<(object)
-    add(object)
+  def <<(todo)
+    add(todo)
   end
 
   def size
@@ -79,10 +82,14 @@ class TodoList
 
   def mark_done_at(position)
     todos.fetch(position).done!
+    # could do :  then would need to write a list.done! method
+    # item_at(position).done!
   end
 
   def mark_undone_at(position)
     todos.fetch(position).undone!
+    #  could do :  then would need to write a list.undone! method
+    # item_at(position).undone!
   end
 
   def shift
@@ -117,6 +124,14 @@ list.add(todo2)                 # adds todo2 to end of list, returns list
 list.add(todo3)                 # adds todo3 to end of list, returns list
 # list.add(1)                     # raises TypeError with message "Can only add Todo objects"
 
+
+
+list.pop
+puts list
+list.mark_done_at(1)
+puts list
+
+
 # # <<
 # # same behavior as add
 # list <<(todo1)
@@ -143,7 +158,7 @@ list.add(todo3)                 # adds todo3 to end of list, returns list
 
 # # mark_done_at
 # list.mark_done_at               # raises ArgumentError
- list.mark_done_at(1)            # marks the 2nd item as done
+# list.mark_done_at(1)            # marks the 2nd item as done
 # list.mark_done_at(100)          # raises IndexError
 
 # # mark_undone_at
@@ -167,7 +182,7 @@ list.add(todo3)                 # adds todo3 to end of list, returns list
 # # ---- Outputting the list -----
 
 # # to_s
- list.to_s                      # returns string representation of the list
+# list.to_s                      # returns string representation of the list
 
 # # ---- Today's Todos ----
 # # [ ] Buy milk
