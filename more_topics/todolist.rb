@@ -77,7 +77,7 @@ class TodoList
   end
 
   def item_at(position)
-    puts todos.fetch(position)
+    todos.fetch(position)
   end
 
   def mark_done_at(position)
@@ -100,8 +100,12 @@ class TodoList
     todos.pop
   end
 
+   def done?
+    @todos.all? {|todo| todo.done? }
+  end
+
   def remove_at(position)
-    todos.delete_at(position)
+    todos.delete(item_at(position))
   end
 
   def each
@@ -146,7 +150,7 @@ class TodoList
 
   def done!
     todos.each_index do |index|
-      mark_done_at(idx)
+      mark_done_at(index)
     end
   end
 
@@ -194,18 +198,19 @@ list.add(todo3)                 # adds todo3 to end of list, returns list
 # list.add(1)                     # raises TypeError with message "Can only add Todo objects"
 
 
-todo1.done!
+# todo1.done!
 # list.find_by_title('Buy milk')
 
 # list.all_not_done
-list.mark_done('Go to gym')
-list.all_done
-puts list
-list.mark_all_done
-puts list
-list.mark_all_undone
-puts list
+# list.mark_done('Go to gym')
+# list.all_done!
+# puts list
+# list.mark_all_done!
+# puts list
+# list.mark_all_undone!
+ # list.to_s
 
+ list.mark_done_at(1)
 
 
 # # <<
