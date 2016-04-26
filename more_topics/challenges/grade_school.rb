@@ -1,7 +1,7 @@
 require 'pry'
 class School
 
-attr_accessor :roster
+attr_reader :roster
 
   def initialize
     @roster = {}
@@ -22,8 +22,7 @@ attr_accessor :roster
   end
 
   def grade(number)
-    return [] unless roster.include?(number)
-      roster[number]
+    roster.include?(number) ? roster[number] : []
   end
 
 end
