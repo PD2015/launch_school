@@ -8,21 +8,20 @@ attr_reader :roster
   end
 
   def to_h
-    if roster.select { |_, pupils| !pupils.empty? } == {}
+     if roster.select { |_, pupils| pupils }.empty?
       return {}
-    else
-     roster.each { |_, pupils| pupils.sort! }.sort.to_h
+     else 
+      roster.each { |_, pupils| pupils.sort! }.sort.to_h
     end
-
   end
 
   def add(name, grade)
-    return roster[grade] = [name] unless roster.include?(grade)
-           roster[grade] += [name]
+    return roster[grade] = [name] unless roster[grade]
+           roster[grade] << name
   end
 
   def grade(number)
-    roster.include?(number) ? roster[number] : []
+    roster[number] || []
   end
 
 end
