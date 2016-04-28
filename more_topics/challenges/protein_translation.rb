@@ -19,8 +19,8 @@ class Translation
   end
 
   def self.of_rna(strand)
-    detected_aa = strand.scan(/.../).map { |c| self.of_codon(c) } 
-    self.codon_valid?(strand) 
+    detected_aa = strand.scan(/.../).map { |c| of_codon(c) } 
+    codon_valid?(strand) 
       if detected_aa.include?('STOP')
         index_of_stop = detected_aa.index('STOP')
         detected_aa.slice(0..(index_of_stop -1))
