@@ -4,25 +4,20 @@ class Octal
   end
 
   def to_decimal
-    number_check
-    input_nums = @input.chars.map(&:to_i)
-    input_nums_size = input_nums.size
-
-    input_nums.map! do |num|
-      input_nums_size -= 1
-      num * (8**input_nums_size)
-    end
-    input_nums.inject(:+)
+    return 0 unless valid_input_check
+    @input.chars
+         .map(&:to_i)
+         .reverse
+         .each_with_index
+         .map { |num, i| num * (8**i) }
+         .inject(:+)
   end
 
   private
 
-  def number_check
-    input_as_ord = @input.chars.map(&:ord)
-    return unless (input_as_ord & [56, 57]).any? || 
-                  (input_as_ord & (65..122).to_a).any? && 
-                  (input_as_ord & (1..7).to_a).any?
-    return @input = '0' 
+  def valid_input_check
+    invalid_chars = [56, 57] + (65..122).to_a
+    return true unless (@input.chars.map(&:ord) & invalid_chars).any?                   
   end
 
 end
