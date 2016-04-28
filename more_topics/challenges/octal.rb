@@ -1,3 +1,4 @@
+require 'pry'
 class Octal
   def initialize(input)
     @input = input
@@ -16,8 +17,7 @@ class Octal
   private
 
   def valid_input_check
-    invalid_chars = [56, 57] + (65..122).to_a
-    return true unless (@input.chars.map(&:ord) & invalid_chars).any?                   
+    return true unless (@input.chars.map(&:ord) - (48..55).to_a).any?                   
   end
 
 end
