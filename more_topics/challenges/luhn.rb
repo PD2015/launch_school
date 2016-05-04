@@ -19,11 +19,11 @@ class Luhn
   def addends
     new_array = []
     @test_number.reverse.each_with_index do |num, idx|
-      if (idx + 1).even?
-        new_array <<  number_conversion_if_greater_than_9(num*2)
-      else
-        new_array << num  
-      end
+      if (idx + 1).even? 
+        new_array << number_conversion_if_greater_than_9(num*2)
+      else 
+        new_array << num 
+      end 
     end
     new_array.reverse
   end
@@ -39,7 +39,7 @@ class Luhn
   def self.create(input)
     new_test = Luhn.new(input)
     return input if new_test.checksum % 10 == 0  
-     new_checksum_ary = input.to_s.split('').map(&:to_i) << detect_required_num(input)
+     new_checksum_ary = num_to_a(input) << detect_required_num(input)
      new_checksum_ary.join.to_i
   end
 
@@ -50,14 +50,17 @@ class Luhn
      num - 9
   end
 
+  def self.num_to_a(num)
+    num.to_s.split('').map(&:to_i)
+  end
+
   def self.detect_required_num(input)  
     (0..9).to_a.detect do |num|
-      trial_input_ary = input.to_s.split('').map(&:to_i) << num
+      trial_input_ary = num_to_a(input) << num
       trial_checksum = Luhn.new(trial_input_ary.join)
       trial_checksum.checksum % 10 == 0
     end
   end
-
 
 end
 
