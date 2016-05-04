@@ -144,6 +144,15 @@ class TodoList
     list
   end
 
+  # def map
+  #   list = TodoList.new(title)
+  #   each do |todo|
+  #     return_value = yield(todo)
+  #     list.add(return_value)
+  #   end
+  #   list
+  # end
+
   def to_a
     todos
   end

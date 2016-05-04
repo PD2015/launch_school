@@ -70,7 +70,8 @@ class Board
   def detect_immediate_threat
     WINNING_LINES.each do |line|
       squares = @squares.values_at(*line)
-        if two_oponent_markers?(squares)
+      HERE yield
+        if two_markers?(squares) { TTTGame::HUMAN_MARKER }
           return find_at_risk_square(squares)
         end
     end
@@ -80,7 +81,7 @@ class Board
   def detect_possible_win
     WINNING_LINES.each do |line|
       squares = @squares.values_at(*line)
-      if two_computer_markers?(squares)
+      if two_markers?(squares) { TTTGame::COMPUTER_MARKER }
         return find_at_risk_square(squares)
       end
     end
@@ -112,18 +113,12 @@ class Board
     # or markers.uniq!.size == 1
   end
 
-  def two_oponent_markers?(squares)
+  def two_markers?(squares)
     markers = squares.select(&:marked?).collect(&:mark)
     return false if markers.size != 2
-    markers.uniq.size == 1 && markers.first == TTTGame::HUMAN_MARKER
+    markers.uniq.size == 1 && markers.first == yield
   end
 
-  def two_computer_markers?(squares)
-    markers = squares.select(&:marked?).collect(&:mark)
-    return false if markers.size != 2
-    markers.uniq.size == 1 && markers.first == TTTGame::COMPUTER_MARKER
-  end
-end
 # *****************************SQUARE*****************************
 class Square
   INITIAL_MARKER = ' '
