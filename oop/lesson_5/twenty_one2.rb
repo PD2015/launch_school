@@ -19,6 +19,7 @@ class Deck
     cards.shuffle!
   end 
 end
+
 # ************************** PARTICIPANT ************************************
 class Participant
   attr_accessor :hand, :name
@@ -28,25 +29,7 @@ class Participant
   end
 
   def hand_values
-   values = hand.map do |card|
-      card.value
-    end
-    values
-  end
-
-  def joiner(card_values, separator = ',', final_separator= '&')
-    if card_values.size < 2
-      return card_values.join
-    else
-      joiner_card_values = card_values.map do |num|
-        unless num == card_values[-2, 2]
-        num.to_s + separator
-        end
-      end
-      joiner_card_values.pop
-      joiner_card_values[-1]= "#{card_values[-2]} #{final_separator} #{card_values.last}"
-      return joiner_card_values.join(' ')
-    end
+    hand.map { |card| card.value }
   end
 
   def display_hand(param = hand_values)
@@ -80,6 +63,19 @@ class Participant
   def bust?
     hand_total > 21
   end
+
+  private
+  # module?
+   def joiner(card_values, separator = ',', final_separator= '&')
+    return card_values.join if card_values.size < 2
+    comma_added_values = card_values.map do |num|
+      num.to_s + separator unless num == card_values[-2, 2]
+    end
+    comma_added_values.pop
+    comma_added_values[-1]= "#{card_values[-2]} #{final_separator} #{card_values.last}"
+    comma_added_values.join(' ')
+  end
+
 end
 # ************************** GAME ************************************
 class Game
@@ -116,22 +112,29 @@ class Game
 OUTPUT
   end
 
-  def display_hit_or_stick_message
+  def player_turn
     answer = ''
     loop do 
-      loop do
-        puts "Would you like to hit(h) or stick(s)?"
-        answer = gets.chomp.downcase
-        break if ['h', 's'].include?(answer)
-        puts "Sorry thats not a valid choice"
-      end
+      answer = player_choice(answer)
       break if answer == 's'    
       player.hand << deal
       clear
       display_participants_hands
       break if player.bust?
     end
-    
+  end
+
+  def player_choice(answer)
+    loop do
+      puts "Would you like to hit(h) or stick(s)?"
+      answer = gets.chomp.downcase
+      break if ['h', 's'].include?(answer)
+      puts "Sorry thats not a valid choice"
+    end
+    answer
+  end
+
+  def dealer_turn
     loop do 
       break if dealer.hit? == false
       dealer.hand << deal
@@ -147,15 +150,17 @@ OUTPUT
   end
 
   def display_winner
-    if player.hand_total > dealer.hand_total && player.hand_total <= 21
+    p = player.hand_total
+    d = dealer.hand_total
+    if p > d && p <= 21
       puts "You've Won that round!"
-    elsif player.hand_total < dealer.hand_total && dealer.hand_total <= 21
+    elsif p < d && d <= 21
       puts "The Dealer Won that round."
-    elsif player.hand_total < dealer.hand_total && player.hand_total <= 21
+    elsif p < d && p <= 21
       puts "You've Won that round! The Dealer went bust."
-    elsif player.hand_total > 21
+    elsif p > 21
       puts "Sorry, thats you bust. The dealer Wins that round"
-    elsif player.hand_total == dealer.hand_total
+    elsif p == d
       puts "That round is a draw!"
     end  
   end
@@ -169,7 +174,8 @@ OUTPUT
     display_welcome_message
     deal_initial_2_cards
     display_participants_hands
-    display_hit_or_stick_message
+    player_turn
+    dealer_turn
     clear
     display_final_results
     display_winner
@@ -177,4 +183,4 @@ OUTPUT
   end  
 end
 
-Game.new.start
+# Game.new.start
