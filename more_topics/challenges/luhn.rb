@@ -1,67 +1,42 @@
-# add 2 to every other number from right to left
-# disreguard _
-# return array of modified numbers
-
-# take output of addends and find total
-
-# check the validity of test_number
-  # 738 = 768 = 20 = false ? < 4 
-  # 8_739_567 = 8_539_537 = 40 = true
-
-
-# create. will need to take number convert it and calculate total.
 class Luhn
-
-  def initialize(test_number)
-    @test_number = test_number.to_s.split('').map(&:to_i)   
+  def initialize(input)
+    @input = input.to_s.split('').map(&:to_i)
   end
 
   def addends
-    new_array = []
-    @test_number.reverse.each_with_index do |num, idx|
-      if (idx + 1).even? 
-        new_array << number_conversion_if_greater_than_9(num*2)
-      else 
-        new_array << num 
-      end 
-    end
-    new_array.reverse
+    @input.reverse.each_with_index.map do |num, idx|
+      (idx + 1).even? ? num_conversion(num * 2) : num
+    end.reverse
   end
 
   def checksum
     addends.inject(:+)
   end
 
-  def valid? 
-    checksum % 10 == 0 && @test_number.size > 3 
+  def valid?
+    checksum % 10 == 0
   end
 
   def self.create(input)
-    new_test = Luhn.new(input)
-    return input if new_test.checksum % 10 == 0  
-     new_checksum_ary = num_to_a(input) << detect_required_num(input)
-     new_checksum_ary.join.to_i
+    Luhn.new(input).valid? ? input : num_to_a(input).push(detect_required_num(input))
+                                                    .join
+                                                    .to_i
   end
 
   private
 
-  def number_conversion_if_greater_than_9(num)
-   return num unless num > 9
-     num - 9
+  def num_conversion(num)
+    num > 9 ? num - 9 : num
   end
 
   def self.num_to_a(num)
     num.to_s.split('').map(&:to_i)
   end
 
-  def self.detect_required_num(input)  
+  def self.detect_required_num(input)
     (0..9).to_a.detect do |num|
-      trial_input_ary = num_to_a(input) << num
-      trial_checksum = Luhn.new(trial_input_ary.join)
-      trial_checksum.checksum % 10 == 0
+      Luhn.new(num_to_a(input).push(num).join).valid?
     end
   end
-
+  private_class_method :num_to_a, :detect_required_num
 end
-
-luhn = Luhn.new(4913)
