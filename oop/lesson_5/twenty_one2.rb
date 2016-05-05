@@ -1,33 +1,26 @@
+# ************************** CARD ************************************
 class Card
-
   attr_reader :value
   def initialize(value)
-    # @suit = suit
     @value = value
   end
- 
 end
-
+# ************************** DECK ************************************
 class Deck
-
+  CARD_VALUES = (%w(Ace Jack Queen King ) + (1..10).to_a) * 4
   attr_reader :cards
-
   def initialize
     @cards = []
     set_new_deck
   end
 
   def set_new_deck
-    card_values_array = (['Ace', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'])* 4
-    card_values_array.each { |value| @cards << Card.new(value) }
-    @cards.shuffle!
-  end
-
-  
+    CARD_VALUES.each { |value| cards << Card.new(value) }
+    cards.shuffle!
+  end 
 end
-
+# ************************** PARTICIPANT ************************************
 class Participant
-
   attr_accessor :hand, :name
   def initialize(name)
     @hand = []
@@ -41,7 +34,7 @@ class Participant
     values
   end
 
-  def joiner(card_values, separator = ',', final_separator= 'and')
+  def joiner(card_values, separator = ',', final_separator= '&')
     if card_values.size < 2
       return card_values.join
     else
@@ -56,13 +49,11 @@ class Participant
     end
   end
 
-  def display_hand(param=hand_values)
+  def display_hand(param = hand_values)
     joiner(hand_values)
   end
 
-
-
-   def hand_total(param =hand_values)
+  def hand_total(param = hand_values)
     sum = 0
     hand_values.each do |value|
       if value == 'Ace'
@@ -73,7 +64,6 @@ class Participant
         sum += value.to_i
       end
     end
-
     if sum > 21
       hand_values.count { |value| value == 'Ace' }.times do
         sum -= 10
@@ -90,63 +80,70 @@ class Participant
   def bust?
     hand_total > 21
   end
-  
 end
-
+# ************************** GAME ************************************
 class Game
-
   attr_accessor :deck, :player, :dealer
-  
   def initialize
     @deck = Deck.new
-    @player = Participant.new('player')
-    @dealer = Participant.new('dealer')
+    @player = Participant.new('Player')
+    @dealer = Participant.new('Dealer')
   end
 
   def clear
     system 'clear'
   end
 
-  def deal
-    deck.cards.pop
-  end
- 
   def deal_initial_2_cards
     2.times do
-     player.hand << deal
-     dealer.hand << deal
+      player.hand << deal
+      dealer.hand << deal
     end
   end
 
-  def display_welcome_message
-    puts "Welcome to Twenty One"
+  def deal
+    deck.cards.pop
   end
 
-  def display_participants_hand
-    puts "#{player.name} has #{player.display_hand}, (total: #{player.hand_total}), #{dealer.name} has #{dealer.hand_values[1]} and an unknown card"
+  def display_welcome_message
+    puts "---- Welcome to Twenty One ----"
+  end
+
+  def display_participants_hands
+    puts <<-OUTPUT 
+#{player.name} has #{player.display_hand}, total: #{player.hand_total}.
+#{dealer.name} has #{dealer.hand_values[1]} & an unknown card.
+OUTPUT
   end
 
   def display_hit_or_stick_message
     answer = ''
-  loop do 
-    loop do
-      puts "Would you like to hit(h) or stick(s)?"
-      answer = gets.chomp.downcase
-      break if ['h', 's'].include?(answer)
-      puts "Sorry thats not a valid choice"
+    loop do 
+      loop do
+        puts "Would you like to hit(h) or stick(s)?"
+        answer = gets.chomp.downcase
+        break if ['h', 's'].include?(answer)
+        puts "Sorry thats not a valid choice"
+      end
+      break if answer == 's'    
+      player.hand << deal
+      clear
+      display_participants_hands
+      break if player.bust?
     end
-    break if answer == 's'    
-    player.hand << deal
-    clear
-    display_participants_hand
-    break if player.bust?
-  end
     
     loop do 
       break if dealer.hit? == false
       dealer.hand << deal
       break if dealer.bust?
     end
+  end
+
+  def display_final_results
+    puts <<-OUTPUT 
+#{player.name} has #{player.display_hand}, total: #{player.hand_total}.
+#{dealer.name} has #{dealer.display_hand}, total: #{dealer.hand_total}.
+OUTPUT
   end
 
   def display_winner
@@ -167,23 +164,17 @@ class Game
     puts "Thanks for playing, catch you later."
   end
 
-
-  def play
-
+  def start
+    clear
     display_welcome_message
     deal_initial_2_cards
-    display_participants_hand
+    display_participants_hands
     display_hit_or_stick_message
     clear
-    display_participants_hand
+    display_final_results
     display_winner
-    display_goodbye_message
-      
+    display_goodbye_message   
   end  
-
 end
 
-
-
-g1 = Game.new
-g1.play
+Game.new.start
