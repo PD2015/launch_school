@@ -35,83 +35,78 @@ class ParticipantTest <MiniTest::Test
 
   def test_initialize
     assert_equal('Bob', @p.name)
-    assert_empty(@p.hand)
-    # test that upon creation hand is empty or has 2 cards in it?
+    assert_empty(@p.cards)
   end
 
-  def test_hand_values
-    @p.hand << Card.new('king')
-    refute_empty(@p.hand_values)
-    assert_equal('king', @p.hand_values[0])
+  def test_values
+    @p.cards<< Card.new('king')
+    refute_empty(@p.values)
+    assert_equal('king', @p.values[0])
   end
 
-  # def test_joiner
-  #   assert_instance_of(String, joiner(['king']))
-  # end
-
-  def test_dispaly_hand_1
-    @p.hand << Card.new('King')
-    assert_equal('King', @p.display_hand)
+  def test_display_cards_1
+    @p.cards << Card.new('King')
+    assert_equal('King', @p.display_cards)
   end
 
-  def test_dispaly_hand_2
-    @p.hand << Card.new('King') << Card.new('Queen')
-    assert_equal('King & Queen', @p.display_hand)
+  def test_dispaly_cards_2
+    @p.cards << Card.new('King') << Card.new('Queen')
+    assert_equal('King & Queen', @p.display_cards)
   end
 
-  def test_display_hand_3
-    @p.hand << Card.new('King') << Card.new('Queen') << Card.new('Jack')
-    assert_equal('King, Queen & Jack', @p.display_hand)
+  def test_display_cards_3
+    @p.cards << Card.new('King') << Card.new('Queen') << Card.new('Jack')
+    assert_equal('King, Queen & Jack', @p.display_cards)
   end
 
-  def test_hand_total
-    assert_empty(@p.hand)  
-    assert_equal(0, @p.hand_total)
+  def test_total
+    assert_empty(@p.cards)  
+    assert_equal(0, @p.total)
     @card_values.each do |value|
-      @p.hand = [Card.new(value)]
-      refute_empty(@p.hand)
-      assert(@p.hand_total > 0)
+      @p.cards = [Card.new(value)]
+      refute_empty(@p.cards)
+      assert(@p.total > 0)
     end
     %w(King Queen Jack).each do |value|
-      @p.hand = [Card.new(value)]
-      assert_equal(10, @p.hand_total)
+      @p.cards = [Card.new(value)]
+      assert_equal(10, @p.total)
     end
-    @p.hand = [Card.new('Ace')]
-    assert_equal(11, @p.hand_total)
-    @p.hand = [Card.new('Ace'), Card.new('10'), Card.new('10')]
-    assert_equal(21, @p.hand_total)
+    @p.cards = [Card.new('Ace')]
+    assert_equal(11, @p.total)
+    @p.cards = [Card.new('Ace'), Card.new('10'), Card.new('10')]
+    assert_equal(21, @p.total)
   end
 
   def test_hit_question
     (1..16).each do |value|
-      @p.hand = [Card.new(value)]
+      @p.cards = [Card.new(value)]
       assert(@p.hit?)
     end
-    @p.hand = [Card.new(18)] 
+    @p.cards = [Card.new(18)] 
     assert_equal(false, @p.hit?)
   end
 
   def test_bust_question
     (1..17).each do |value|
-      @p.hand = [Card.new(value)]
+      @p.cards = [Card.new(value)]
       assert_equal(false, @p.bust?)
     end
-    @p.hand = [Card.new(22)] 
+    @p.cards = [Card.new(22)] 
     assert(@p.bust?)
   end
 end
 
 # ************************** GAME ************************************
 class Game
-
+  # no tests appear to fail no matter what gets input....Essentially not being tested.
   def setup
+    @game = Game.new
     @deck = Deck.new
     @player = Participant.new('Player')
     @dealer = Participant.new('Dealer') 
   end
 
   def test_initialize
-    @game = Game.new
     assert_equal('Player', @player.name)
     assert_equal('Dealer', @dealer.name)
     assert_equal([], @deck.cards)
@@ -138,7 +133,13 @@ class Game
   end
 
   def test_display_welcome_message
-    assert_equal("---- Welcome to Twenty One ----", @game.display_welcome_message)
+    assert_equal(nil, @game.display_welcome_message)
+    assert_output("---- Welcome to Twenty One ----", @game.display_welcome_message)
+  end
+
+  def test_display_winner
+    @player.total = 22
+    assert_output("Sorry, thats you bust. The dealer Wins that round", @game.display_winner)
   end
 
 end

@@ -17,63 +17,70 @@ class Deck
   def set_new_deck
     CARD_VALUES.each { |value| cards << Card.new(value) }
     cards.shuffle!
-  end 
+  end
+
+  def deal_one
+    cards.pop
+  end
 end
-
-# ************************** PARTICIPANT ************************************
-class Participant
-  attr_accessor :hand, :name
-  def initialize(name)
-    @hand = []
-    @name = name
+# ************************** M HAND ************************************
+module Hand
+  def values
+    cards.map(&:value)
   end
 
-  def hand_values
-    hand.map { |card| card.value }
+  def display_cards
+    joiner(values)
   end
 
-  def display_hand(param = hand_values)
-    joiner(hand_values)
-  end
-
-  def hand_total(param = hand_values)
+  def total
     sum = 0
-    hand_values.each do |value|
-      if value == 'Ace'
-        sum += 11
-      elsif value.to_i == 0
-        sum += 10
-      else
-        sum += value.to_i
-      end
+    values.each do |value|
+      sum += if value == 'Ace'
+               11
+             elsif value.to_i == 0
+               10
+             else
+               v = value.to_i
+               v
+             end
     end
     if sum > 21
-      hand_values.count { |value| value == 'Ace' }.times do
+      values.count { |value| value == 'Ace' }.times do
         sum -= 10
       end
     end
     sum
   end
 
-# for dealer
-  def hit?
-    hand_total < 17
-  end
-
-  def bust?
-    hand_total > 21
-  end
-
   private
-  # module?
-   def joiner(card_values, separator = ',', final_separator= '&')
+
+  def joiner(card_values, separator = ',', final_separator= '&')
     return card_values.join if card_values.size < 2
     comma_added_values = card_values.map do |num|
       num.to_s + separator unless num == card_values[-2, 2]
     end
     comma_added_values.pop
-    comma_added_values[-1]= "#{card_values[-2]} #{final_separator} #{card_values.last}"
+    comma_added_values[-1] = "#{card_values[-2]} #{final_separator} #{card_values.last}"
     comma_added_values.join(' ')
+  end
+
+end
+# ************************** PARTICIPANT ************************************
+class Participant
+  include Hand
+  attr_accessor :cards, :name
+  def initialize(name)
+    @cards = []
+    @name = name
+  end
+
+  def hit?
+    total < 17
+  end
+
+  def bust?
+    total > 21
   end
 
 end
@@ -84,6 +91,7 @@ class Game
     @deck = Deck.new
     @player = Participant.new('Player')
     @dealer = Participant.new('Dealer')
+    deal_initial_2_cards
   end
 
   def clear
@@ -92,13 +100,9 @@ class Game
 
   def deal_initial_2_cards
     2.times do
-      player.hand << deal
-      dealer.hand << deal
+      player.cards << deck.deal_one
+      dealer.cards << deck.deal_one
     end
-  end
-
-  def deal
-    deck.cards.pop
   end
 
   def display_welcome_message
@@ -106,18 +110,18 @@ class Game
   end
 
   def display_participants_hands
-    puts <<-OUTPUT 
-#{player.name} has #{player.display_hand}, total: #{player.hand_total}.
-#{dealer.name} has #{dealer.hand_values[1]} & an unknown card.
+    puts <<-OUTPUT
+#{player.name} has #{player.display_cards}, total: #{player.total}.
+#{dealer.name} has #{dealer.values[1]} & an unknown card.
 OUTPUT
   end
 
   def player_turn
     answer = ''
-    loop do 
+    loop do
       answer = player_choice(answer)
-      break if answer == 's'    
-      player.hand << deal
+      break if answer == 's'
+      player.cards << deck.deal_one
       clear
       display_participants_hands
       break if player.bust?
@@ -135,23 +139,23 @@ OUTPUT
   end
 
   def dealer_turn
-    loop do 
+    loop do
       break if dealer.hit? == false
-      dealer.hand << deal
+      dealer.cards << deck.deal_one
       break if dealer.bust?
     end
   end
 
   def display_final_results
-    puts <<-OUTPUT 
-#{player.name} has #{player.display_hand}, total: #{player.hand_total}.
-#{dealer.name} has #{dealer.display_hand}, total: #{dealer.hand_total}.
+    puts <<-OUTPUT
+#{player.name} has #{player.display_cards}, total: #{player.total}.
+#{dealer.name} has #{dealer.display_cards}, total: #{dealer.total}.
 OUTPUT
   end
 
   def display_winner
-    p = player.hand_total
-    d = dealer.hand_total
+    p = player.total
+    d = dealer.total
     if p > d && p <= 21
       puts "You've Won that round!"
     elsif p < d && d <= 21
@@ -162,7 +166,7 @@ OUTPUT
       puts "Sorry, thats you bust. The dealer Wins that round"
     elsif p == d
       puts "That round is a draw!"
-    end  
+    end
   end
 
   def display_goodbye_message
@@ -172,15 +176,14 @@ OUTPUT
   def start
     clear
     display_welcome_message
-    deal_initial_2_cards
     display_participants_hands
     player_turn
     dealer_turn
     clear
     display_final_results
     display_winner
-    display_goodbye_message   
-  end  
+    display_goodbye_message
+  end
 end
 
-# Game.new.start
+Game.new
