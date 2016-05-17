@@ -1,0 +1,20 @@
+1)
+  -method
+  -path
+
+  optional
+  -parameters
+  -headers
+  -body
+
+2)
+-status code
+
+optional
+-headers
+-body
+
+3)
+Whether data is being passed to the server, without it appearing in the url. Whether the data is changing the data stored on the server.
+
+4) No, the adress is used to coonnect with the server, the information in the request is method, path, parameters, headers, body.

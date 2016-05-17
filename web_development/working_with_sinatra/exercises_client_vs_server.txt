@@ -1,0 +1,10 @@
+Gemfile:
+Server side. link to files/librarys required to process info on the server. File is used by bundler, the ruby dependency manager to install libraries required to run the programe.
+
+Ruby files .rb: server side. Contains the logic that is called to serve up and deliver requests made. deals with the requests.
+
+Style sheets .css: This is client side, they are interpreted by the browser, instructions on how to layout a web page..
+
+javascript files .js: client side. The code is evaluated by the javascript interpreter within a web browser.JS adds behaviour to a web page. 
+
+view templates .erb: this is server side. The code needs to be processed before beig sent to the client.

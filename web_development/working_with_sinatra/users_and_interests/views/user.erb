@@ -1,0 +1,14 @@
+<h1><%=params[:name].capitalize%>'s Page: </h1>
+
+<h3>Email: </h3>
+<p><%= @user[:email] %></p>
+<h3>Interests: </h3>
+<p><%= @user[:interests].join(', ') %></p>
+<hr>
+<h3>Other Users</h3>
+<% @users.each do |user| %>
+  <%unless user[0] == params[:name].to_sym %>
+    <a href='<%=user[0]%>'><%= user[0] %></a>
+  <% end %>
+<% end %>
+<h4><a href='/users'>Back to all users</a></h4>

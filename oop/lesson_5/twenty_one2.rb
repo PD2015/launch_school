@@ -64,7 +64,6 @@ module Hand
     comma_added_values[-1] = "#{card_values[-2]} #{final_separator} #{card_values.last}"
     comma_added_values.join(' ')
   end
-
 end
 # ************************** PARTICIPANT ************************************
 class Participant
@@ -82,7 +81,6 @@ class Participant
   def bust?
     total > 21
   end
-
 end
 # ************************** GAME ************************************
 class Game
